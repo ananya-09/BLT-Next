@@ -75,8 +75,15 @@ async def handle_auth_login(request):
         email = body.get('email')
         password = body.get('password')
         
-        # In production, validate against database
-        # For now, mock authentication
+        # IMPORTANT: This is mock authentication for development/demo only
+        # TODO: In production, implement proper authentication:
+        # 1. Query database for user by email
+        # 2. Verify password hash using bcrypt or argon2
+        # 3. Generate proper JWT token with secure secret
+        # 4. Set appropriate token expiration
+        # 5. Implement refresh token mechanism
+        
+        # Mock authentication - DO NOT USE IN PRODUCTION
         if email and password:
             user = {
                 'id': 1,
@@ -84,8 +91,11 @@ async def handle_auth_login(request):
                 'email': email,
             }
             
-            # Generate a mock JWT token (in production, use proper JWT)
-            token = f"mock_token_{email}_{datetime.now().timestamp()}"
+            # WARNING: This is a mock token - NOT SECURE for production
+            # Replace with proper JWT library (e.g., PyJWT)
+            # Example: token = jwt.encode({'user_id': user['id']}, JWT_SECRET, algorithm='HS256')
+            import hashlib
+            token = f"mock_{hashlib.sha256(f'{email}{datetime.now().isoformat()}'.encode()).hexdigest()}"
             
             return create_response({
                 'success': True,
@@ -112,8 +122,16 @@ async def handle_auth_signup(request):
         email = body.get('email')
         password = body.get('password')
         
-        # In production, validate and store in database
-        # For now, mock signup
+        # IMPORTANT: This is mock signup for development/demo only
+        # TODO: In production, implement proper user registration:
+        # 1. Validate input (email format, password strength, username uniqueness)
+        # 2. Hash password with bcrypt/argon2 before storing
+        # 3. Check for existing user in database
+        # 4. Store user securely in database
+        # 5. Send verification email
+        # 6. Generate secure JWT token
+        
+        # Mock signup - DO NOT USE IN PRODUCTION
         if username and email and password:
             user = {
                 'id': 1,
@@ -121,8 +139,9 @@ async def handle_auth_signup(request):
                 'email': email,
             }
             
-            # Generate a mock JWT token
-            token = f"mock_token_{email}_{datetime.now().timestamp()}"
+            # WARNING: Mock token - NOT SECURE for production
+            import hashlib
+            token = f"mock_{hashlib.sha256(f'{email}{datetime.now().isoformat()}'.encode()).hexdigest()}"
             
             return create_response({
                 'success': True,
@@ -152,20 +171,30 @@ async def handle_auth_me(request):
     
     token = auth_header.replace('Bearer ', '')
     
-    # In production, validate JWT and fetch user from database
-    # For now, mock user extraction from token
-    if token.startswith('mock_token_'):
-        parts = token.split('_')
-        if len(parts) >= 3:
-            email = parts[2]
+    # IMPORTANT: This is mock token validation for development/demo only
+    # TODO: In production, implement proper JWT validation:
+    # 1. Verify JWT signature with secret key
+    # 2. Check token expiration
+    # 3. Validate token claims
+    # 4. Query database for current user data
+    # Example: decoded = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])
+    
+    # Mock token validation - DO NOT USE IN PRODUCTION
+    if token.startswith('mock_'):
+        # Extract email from mock token (this is insecure)
+        # In production, decode JWT properly
+        try:
+            # For demo purposes, return a mock user
             user = {
                 'id': 1,
-                'username': email.split('@')[0] if '@' in email else 'user',
-                'email': email,
+                'username': 'demo_user',
+                'email': 'demo@example.com',
             }
             return create_response({
                 'user': user
             }, origin=request.headers.get('Origin'))
+        except Exception:
+            pass
     
     return create_response({
         'error': 'Invalid token'
@@ -240,7 +269,17 @@ async def route_request(request):
     """Route the request to the appropriate handler"""
     method = request.method
     url = request.url
-    path = url.split('?')[0]  # Remove query params
+    
+    # Parse URL properly to extract path
+    # Handle both full URLs (https://api.example.com/api/stats) and paths (/api/stats)
+    if url.startswith('http://') or url.startswith('https://'):
+        # Extract path from full URL
+        from urllib.parse import urlparse
+        parsed = urlparse(url)
+        path = parsed.path
+    else:
+        # Already a path
+        path = url.split('?')[0]  # Remove query params
     
     # Handle CORS preflight
     if method == 'OPTIONS':

@@ -9,7 +9,12 @@
 // Configuration
 // ===================================
 const CONFIG = {
-    API_BASE_URL: '/api', // Points to Cloudflare Workers
+    // API endpoint - should be set to your Cloudflare Worker URL
+    // For production, use absolute URL like: 'https://api.owaspblt.org'
+    // For local development with worker: 'http://localhost:8787'
+    API_BASE_URL: window.location.hostname === 'localhost' 
+        ? 'http://localhost:8787' 
+        : 'https://api.owaspblt.org', // TODO: Replace with your actual worker URL
     CACHE_DURATION: 5 * 60 * 1000, // 5 minutes
     ENABLE_ANALYTICS: true,
 };

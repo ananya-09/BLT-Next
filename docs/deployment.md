@@ -123,8 +123,10 @@ wrangler deploy
 
 Your API will be deployed and you'll get a URL like:
 ```
-https://blt-api.your-account.workers.dev
+https://blt-api.<YOUR_CLOUDFLARE_ACCOUNT>.workers.dev
 ```
+
+Replace `<YOUR_CLOUDFLARE_ACCOUNT>` with your actual Cloudflare account subdomain.
 
 ### Step 7: Update Frontend Configuration
 
@@ -132,11 +134,14 @@ Update the API endpoint in `src/assets/js/main.js`:
 
 ```javascript
 const CONFIG = {
-    API_BASE_URL: 'https://blt-api.your-account.workers.dev',
+    // Replace with your actual Worker URL
+    API_BASE_URL: 'https://blt-api.<YOUR_CLOUDFLARE_ACCOUNT>.workers.dev',
     // Or your custom domain:
-    // API_BASE_URL: 'https://api.yourdomain.com',
+    // API_BASE_URL: 'https://api.<YOUR_DOMAIN>.com',
 };
 ```
+
+**IMPORTANT**: Make sure to replace the placeholder URLs with your actual endpoints before deploying to production.
 
 Commit and push the changes:
 ```bash
