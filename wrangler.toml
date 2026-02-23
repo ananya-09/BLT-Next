@@ -30,7 +30,7 @@ command = ""
 [[d1_databases]]
 binding = "DB"
 database_name = "blt-database"
-database_id = "00000000-0000-0000-0000-000000000000" # Placeholder ID
+database_id = "27d79830-7681-4e22-ad2d-12ad94e0d7cd" # Placeholder ID
 
 # Rate limiting
 [[routes]]
