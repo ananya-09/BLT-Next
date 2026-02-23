@@ -32,19 +32,11 @@ binding = "DB"
 database_name = "blt-database"
 database_id = "27d79830-7681-4e22-ad2d-12ad94e0d7cd" # Placeholder ID
 
-# Rate limiting
-[[routes]]
-pattern = "*/api/*"
-zone_name = "your-domain.com"
-
 # Development
 [env.development]
 name = "blt-api-dev"
 
-# Production
-[env.production]
-name = "blt-api-prod"
-route = "https://api.owaspblt.org/*"
+
 
 # Triggers
 [triggers]
