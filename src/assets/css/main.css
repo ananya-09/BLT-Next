@@ -1,14 +1,21 @@
 /* ===================================
    OWASP BLT - Brand Tokens and Base Reset
-   Primary styling is handled by Tailwind CDN.
-   This file provides CSS custom properties for
-   any non-Tailwind consumers and a minimal base reset.
+   Primary styling is handled by Tailwind CDN (darkMode: 'class').
+   This file provides CSS custom properties and a minimal base reset.
    =================================== */
 
-/* --- Brand Tokens --- */
+/* --- Brand Tokens: Light Mode --- */
 :root {
     --color-primary: #E10101;
     --color-primary-dark: #BC0000;
+
+    --color-bg: #ffffff;
+    --color-bg-subtle: #f9fafb;
+    --color-border: #E5E5E5;
+
+    --color-text-primary: #111827;
+    --color-text-secondary: #4b5563;
+    --color-text-muted: #6b7280;
 
     --color-white: #ffffff;
     --color-gray-50: #f9fafb;
@@ -26,6 +33,17 @@
     --color-warning: #f59e0b;
     --color-danger: #ef4444;
     --color-info: #3b82f6;
+}
+
+/* --- Brand Tokens: Dark Mode --- */
+.dark {
+    --color-bg: #030712;
+    --color-bg-subtle: #111827;
+    --color-border: #1f2937;
+
+    --color-text-primary: #f9fafb;
+    --color-text-secondary: #d1d5db;
+    --color-text-muted: #9ca3af;
 }
 
 /* --- Minimal Reset --- */
