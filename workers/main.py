@@ -272,7 +272,11 @@ async def handle_leaderboard(request, env=None):
         return create_response({'error': 'Database binding missing'}, status=500, origin=request.headers.get('Origin'))
 
     try:
-        results = await env.DB.prepare("SELECT rank, username, points, bugs FROM leaderboard ORDER BY points DESC LIMIT 10").all()
+        results = await env.DB.prepare(
+            '''SELECT rank, ('User #' || user_id) AS username, points, bugs_verified AS bugs
+            FROM leaderboard
+            ORDER BY points DESC
+            LIMIT 10''').all()
         leaderboard = results.results
         
         # Return HTML table for HTMX
@@ -379,10 +383,15 @@ async def route_request(request, env):
             print(f"Handler Error: {e}")
             raise e
     
-    # Fallback to static assets
+    # Handle root and static assets
     if hasattr(env, 'ASSETS'):
         try:
-            return await env.ASSETS.fetch(request)
+            # If path is root, fetch index.html
+            fetch_url = request.url
+            if path == '/':
+                fetch_url = str(url).replace(path, '/index.html')
+            
+            return await env.ASSETS.fetch(fetch_url)
         except Exception as e:
             print(f"Assets Error: {e}")
     
