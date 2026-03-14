@@ -36,6 +36,7 @@ def create_response(data, status=200, origin=None):
     js_headers.set('X-Content-Type-Options', 'nosniff')
     js_headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
     js_headers.set('Content-Security-Policy', "default-src 'none'; frame-ancestors 'none'")
+    js_headers.set('X-Frame-Options', 'DENY')
     
     cors = get_cors_headers(origin)
     for k, v in cors.items():
@@ -55,6 +56,7 @@ def handle_html_response(html, origin=None):
     js_headers.set('X-Content-Type-Options', 'nosniff')
     js_headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
     js_headers.set('Content-Security-Policy', "default-src 'none'; frame-ancestors 'none'")
+    js_headers.set('X-Frame-Options', 'DENY')
     
     return Response.new(
         html,
