@@ -65,6 +65,29 @@ def handle_cors_preflight(origin):
     )
 
 # ===================================
+# Helpers
+# ===================================
+
+def to_dict(obj):
+    """Convert a JsProxy database row or list of rows to plain Python dicts.
+    
+    Cloudflare Workers D1 returns results as JsProxy objects which
+    cannot be serialized by json.dumps(). This helper recursively
+    converts them to native Python types using the .to_py() method.
+    
+    Args:
+        obj: A JsProxy object, list of JsProxy objects, or a plain Python object.
+    
+    Returns:
+        A plain Python dict, list of dicts, or the original object.
+    """
+    if hasattr(obj, 'to_py'):
+        return obj.to_py()
+    if isinstance(obj, list):
+        return [to_dict(item) for item in obj]
+    return obj
+
+# ===================================
 # Route Handlers
 # ===================================
 
@@ -262,7 +285,8 @@ async def handle_bugs_list(request, env=None):
     # GET case (list bugs)
     try:
         results = await env.DB.prepare("SELECT * FROM bugs ORDER BY created_at DESC LIMIT 20").all()
-        return create_response({'bugs': results.results}, origin=request.headers.get('Origin'))
+        bugs = to_dict(results.results)
+        return create_response({'bugs': bugs}, origin=request.headers.get('Origin'))
     except Exception as e:
         return create_response({'error': str(e)}, status=500, origin=request.headers.get('Origin'))
 
