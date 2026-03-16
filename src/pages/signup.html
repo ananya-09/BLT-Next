@@ -172,12 +172,41 @@
         return;
       }
 
-      // TODO: Implement actual signup logic
-      console.log('Signup attempt:', { username, email });
-      
-      // Placeholder: Show success message and redirect
-      alert('Signup functionality will be implemented with backend integration.');
-      // window.location.href = '../index.html';
+      // Implement actual signup logic
+      try {
+        const response = await fetch('/auth/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            username,
+            email,
+            password
+          })
+        });
+
+        if (!response.ok) {
+          let message = 'Signup failed. Please try again.';
+          try {
+            const errorData = await response.json();
+            if (errorData && errorData.message) {
+              message = errorData.message;
+            }
+          } catch (_) {
+            // Ignore JSON parse errors and use default message
+          }
+          alert(message);
+          return;
+        }
+
+        // Optionally parse response body if needed
+        // const data = await response.json();
+        alert('Account created successfully. You can now sign in.');
+        window.location.href = '../index.html';
+      } catch (err) {
+        alert('An error occurred while signing up. Please check your connection and try again.');
+      }
     });
   </script>
 </body>
