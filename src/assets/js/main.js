@@ -270,6 +270,71 @@ class UIComponents {
 // Event Handlers
 // ===================================
 function setupEventHandlers() {
+<<<<<<< HEAD
+=======
+    // Login button (modal only for button elements)
+    const loginBtn = document.getElementById('loginBtn');
+    if (loginBtn && loginBtn.tagName.toLowerCase() === 'button') {
+        loginBtn.addEventListener('click', () => {
+            UIComponents.showModal(UIComponents.createLoginForm());
+
+            // Setup form submission
+            const form = document.getElementById('loginForm');
+            if (form) {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(form);
+                    const email = formData.get('email');
+                    const password = formData.get('password');
+
+                    const result = await auth.login(email, password);
+                    if (result.success) {
+                        UIComponents.hideModal();
+                        UIComponents.showNotification('Logged in successfully!', 'success');
+                        updateUIForAuth();
+                    } else {
+                        UIComponents.showNotification(result.error, 'error');
+                    }
+                });
+            }
+        });
+    }
+
+    // Signup buttons (modal only for button elements)
+    const signupButtons = ['signupBtn', 'ctaSignupBtn'];
+    signupButtons.forEach(btnId => {
+        const btn = document.getElementById(btnId);
+        if (btn && btn.tagName.toLowerCase() === 'button') {
+            btn.addEventListener('click', () => {
+                UIComponents.showModal(UIComponents.createSignupForm());
+
+                // Setup form submission
+                const form = document.getElementById('signupForm');
+                if (form) {
+                    form.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        const formData = new FormData(form);
+                        const userData = {
+                            username: formData.get('username'),
+                            email: formData.get('email'),
+                            password: formData.get('password'),
+                        };
+
+                        const result = await auth.signup(userData);
+                        if (result.success) {
+                            UIComponents.hideModal();
+                            UIComponents.showNotification('Account created successfully!', 'success');
+                            updateUIForAuth();
+                        } else {
+                            UIComponents.showNotification(result.error, 'error');
+                        }
+                    });
+                }
+            });
+        }
+    });
+
+>>>>>>> b562f95 (Fix duplicated login/signup controls & invalid CTA markup in index.html)
     // Theme Toggle
     const themeToggle = document.getElementById('themeToggle');
     if (themeToggle) {
