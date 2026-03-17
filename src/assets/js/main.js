@@ -270,8 +270,6 @@ class UIComponents {
 // Event Handlers
 // ===================================
 function setupEventHandlers() {
-<<<<<<< HEAD
-=======
     // Login button (modal only for button elements)
     const loginBtn = document.getElementById('loginBtn');
     if (loginBtn && loginBtn.tagName.toLowerCase() === 'button') {
@@ -334,7 +332,6 @@ function setupEventHandlers() {
         }
     });
 
->>>>>>> b562f95 (Fix duplicated login/signup controls & invalid CTA markup in index.html)
     // Theme Toggle
     const themeToggle = document.getElementById('themeToggle');
     if (themeToggle) {
@@ -389,6 +386,57 @@ function setupEventHandlers() {
                 }
             });
         }
+
+        // Handle submit for standalone login page
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(loginForm);
+            const email = formData.get('email');
+            const password = formData.get('password');
+
+            const result = await auth.login(email, password);
+            if (result.success) {
+                UIComponents.showNotification('Logged in successfully!', 'success');
+                updateUIForAuth();
+                // Keep user on the site; redirect to home if on the standalone login page
+                if (window.location.pathname.includes('/pages/')) {
+                    window.location.href = '../index.html';
+                }
+            } else {
+                UIComponents.showNotification(result.error, 'error');
+            }
+        });
+    }
+
+    // Signup page handlers (bound in external JS to avoid inline event attributes)
+    const signupForm = document.getElementById('signupForm');
+    if (signupForm) {
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(signupForm);
+            const userData = {
+                username: formData.get('username'),
+                email: formData.get('email'),
+                password: formData.get('password'),
+            };
+            const confirmPassword = formData.get('confirmPassword');
+
+            if (userData.password !== confirmPassword) {
+                UIComponents.showNotification('Passwords do not match', 'error');
+                return;
+            }
+
+            const result = await auth.signup(userData);
+            if (result.success) {
+                UIComponents.showNotification('Account created successfully!', 'success');
+                updateUIForAuth();
+                if (window.location.pathname.includes('/pages/')) {
+                    window.location.href = '../index.html';
+                }
+            } else {
+                UIComponents.showNotification(result.error, 'error');
+            }
+        });
     }
 }
 

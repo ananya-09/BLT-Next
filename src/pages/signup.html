@@ -121,24 +121,5 @@
     </div>
   </footer>
 
-  <script>
-    document.getElementById('signupForm')?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      const username = formData.get('username');
-      const email = formData.get('email');
-      const password = formData.get('password');
-      const confirmPassword = formData.get('confirmPassword');
-
-      if (password !== confirmPassword) {
-        alert('Passwords do not match!');
-        return;
-      }
-
-      // TODO: Replace with real signup backend integration
-      console.log('Signup attempt', { username, email });
-      alert('Signup functionality is not implemented yet.');
-    });
-  </script>
 </body>
 </html>
