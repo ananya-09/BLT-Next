@@ -12,6 +12,18 @@ ALLOWED_ORIGINS = [
     'http://localhost:8000',
 ]
 
+FRONTEND_SECURITY_HEADERS = {
+    'X-Content-Type-Options': 'nosniff',
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+    'X-Frame-Options': 'DENY',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+    'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
+    'Cross-Origin-Resource-Policy': 'same-site',
+    'X-Permitted-Cross-Domain-Policies': 'none',
+    'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
+}
+
 # ===================================
 # CORS Helpers
 # ===================================
@@ -70,6 +82,19 @@ def handle_cors_preflight(origin):
         '',
         status=204,
         headers=Headers.new(get_cors_headers(origin))
+    )
+
+
+def apply_frontend_security_headers(asset_response):
+    """Attach security headers to static asset responses served by ASSETS."""
+    js_headers = Headers.new(asset_response.headers)
+    for key, value in FRONTEND_SECURITY_HEADERS.items():
+        js_headers.set(key, value)
+
+    return Response.new(
+        asset_response.body,
+        status=asset_response.status,
+        headers=js_headers
     )
 
 # ===================================
@@ -421,8 +446,9 @@ async def route_request(request, env):
             fetch_url = request.url
             if path == '/':
                 fetch_url = str(url).replace(path, '/index.html')
-            
-            return await env.ASSETS.fetch(fetch_url)
+
+            asset_response = await env.ASSETS.fetch(fetch_url)
+            return apply_frontend_security_headers(asset_response)
         except Exception as e:
             print(f"Assets Error: {e}")
     
