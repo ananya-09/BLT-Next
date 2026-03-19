@@ -393,8 +393,9 @@ function setupEventHandlers() {
             const formData = new FormData(loginForm);
             const email = formData.get('email');
             const password = formData.get('password');
+            const remember = formData.has('remember');
 
-            const result = await auth.login(email, password);
+            const result = await auth.login(email, password, remember);
             if (result.success) {
                 UIComponents.showNotification('Logged in successfully!', 'success');
                 updateUIForAuth();
